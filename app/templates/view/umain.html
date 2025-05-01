@@ -1,0 +1,62 @@
+<!-- templates/view/umain.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+        crossorigin="anonymous">
+  <!-- カスタムCSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <title>飲食店検索</title>
+</head>
+<body>
+  <div class="container mt-5">
+    <form action="{{ url_for('main') }}" method="post" class="bg-light p-4 rounded shadow">
+      <h1 class="text-center mb-4">飲食店検索</h1>
+      <p>
+        ◆検索方法<br>
+        全件　　：空欄のまま検索<br>
+        都道府県：【例】「東京都」<br>
+        区　　　：【例】「港区」「東京都港区」<br>
+        地名　　：【例】「六本木」「港区六本木」
+      </p>
+      <div class="form-group">
+        <label for="search_location">店舗地域:</label>
+        <input type="text" class="form-control" name="searchLocation" value="{{searchLocation}}">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">検索</button>
+    </form>
+    <br>
+    {% if es and es.list and es.list|length > 0 %}
+      <p>全{{ es.total_count }}件</p>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">地域</th>
+              <th scope="col">店名</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for e in es.list %}
+              <tr>
+                <td>{{ e.location }}</td>
+                <td>
+                  <a href="{{ e.detail }}" target="_blank" rel="noopener noreferrer">
+                    {{ e.shop }}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

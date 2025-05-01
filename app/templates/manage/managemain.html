@@ -1,0 +1,53 @@
+<!-- templates/manage/managemain.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" 
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+        crossorigin="anonymous">
+  <title>店舗情報管理画面</title>
+</head>
+<body>
+  <div class="container mt-3">
+    <form action="{{ url_for('manage_main') }}" method="post" class="mb-3">
+      <p>飲食店追加</p>
+      <div class="form-group my-2">
+        地域：<input type="text" name="location" class="form-control">
+      </div>
+      <div class="form-group my-2">
+        店名：<input type="text" name="shop" class="form-control">
+      </div>
+      <div class="form-group my-2">
+        店舗Webサイト：<input type="text" name="detail" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">追加</button>
+    </form>
+    {% if msg %}
+      <p>{{ msg }}</p>
+    {% endif %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>NO.</th>
+          <th>地域</th>
+          <th>店名</th>
+          <th>Webサイト</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in list %}
+          <tr>
+            <td>{{ e.id }}</td>
+            <td>{{ e.location }}</td>
+            <td>{{ e.shop }}</td>
+            <td><a href="{{ e.detail }}" target="_blank">{{ e.detail }}</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
