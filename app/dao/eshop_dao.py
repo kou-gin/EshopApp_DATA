@@ -9,7 +9,7 @@ class EshopDAO:
         テーブル 'eshops' の全件取得を行い、Eshop オブジェクトのリストとして返す。
         """
         eshops = []
-        sql = "SELECT * FROM eshops"
+        sql = "SELECT * FROM eshops ORDER BY id DESC"
         conn = None
         cursor = None
         try:
@@ -76,6 +76,7 @@ class EshopDAO:
             SELECT id,location, shop, detail
             FROM eshops
             WHERE location LIKE %s
+            ORDER BY id DESC
             LIMIT %s OFFSET %s
         """
         conn = None
