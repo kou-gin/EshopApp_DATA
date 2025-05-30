@@ -1,3 +1,4 @@
+
 # dao/eshop_dao.py
 
 from dao.db_connector import get_connection
@@ -35,56 +36,74 @@ class EshopDAO:
 
         return eshops
 
-    def get_total_count(self, search_location):
+    def get_total_count(self, search_location="", search_shop=""):
         """
-        serch_location に部分一致するレコードの総件数を返す。
+        search_location や search_shop に部分一致するレコードの総件数を返す。
         """
         total_count = 0
-        search_keyword = "%" + search_location + "%"
-        sql = """
-            SELECT count(*) AS total
-            FROM eshops
-            WHERE location LIKE %s
-        """
+        conditions = []
+        params = []
+
+        if search_location:
+            conditions.append("location LIKE %s")
+            params.append(f"%{search_location}%")
+        if search_shop:
+            conditions.append("shop LIKE %s")
+            params.append(f"%{search_shop}%")
+
+        sql = "SELECT count(*) AS total FROM eshops"
+        if conditions:
+            sql += " WHERE " + " AND ".join(conditions)
+
         conn = None
         cursor = None
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            cursor.execute(sql, (search_keyword,))
+            cursor.execute(sql, tuple(params))
             row = cursor.fetchone()
             if row:
                 total_count = row.get("total", 0)
         except Exception as e:
             print("Error in get_total_count:", e)
         finally:
-            if cursor is not None:
+            if cursor:
                 cursor.close()
-            if conn is not None:
+            if conn:
                 conn.close()
-
         return total_count
 
-    def get_list_by_search_shop(self, search_location):
+    def get_list_by_search_shop(self, search_location="", search_shop=""):
         """
-        serch_location に部分一致するレコードを取得して Eshop オブジェクトのリストとして返す。
-        LIMIT 100、OFFSET 0 を使用している。
+        search_location や search_shop に部分一致するレコードを取得し、
+        Eshop オブジェクトのリストとして返す。LIMIT 200, OFFSET 0。
         """
         eshops = []
-        search_keyword = "%" + search_location + "%"
+        conditions = []
+        params = []
+
+        if search_location:
+            conditions.append("location LIKE %s")
+            params.append(f"%{search_location}%")
+        if search_shop:
+            conditions.append("shop LIKE %s")
+            params.append(f"%{search_shop}%")
+
         sql = """
-            SELECT id,location, shop, detail
+            SELECT id, location, shop, detail
             FROM eshops
-            WHERE location LIKE %s
-            ORDER BY id DESC
-            LIMIT %s OFFSET %s
         """
+        if conditions:
+            sql += " WHERE " + " AND ".join(conditions)
+        sql += " ORDER BY id DESC LIMIT %s OFFSET %s"
+        params.extend([200, 0])
+
         conn = None
         cursor = None
         try:
             conn = get_connection()
             cursor = conn.cursor(dictionary=True)
-            cursor.execute(sql, (search_keyword, 200, 0))
+            cursor.execute(sql, tuple(params))
             rows = cursor.fetchall()
             for row in rows:
                 eshop = Eshop(
@@ -97,11 +116,10 @@ class EshopDAO:
         except Exception as e:
             print("Error in get_list_by_search_shop:", e)
         finally:
-            if cursor is not None:
+            if cursor:
                 cursor.close()
-            if conn is not None:
+            if conn:
                 conn.close()
-
         return eshops
 
     def insert_one(self, eshop):

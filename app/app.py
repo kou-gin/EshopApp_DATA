@@ -67,18 +67,23 @@ def requires_auth(f):
 
 @app.route("/eshop_search", methods=["GET", "POST"])
 def main():
-        if request.method == "GET":
-             return render_template("view/umain.html", es=None, searchLocation="")
-        logging.debug(">>> main() route accessed")
-        searchLocation = request.form.get("searchLocation", "")
-        logging.debug(f"search_location = {searchLocation}")
-        es = EshopWord(search_location=searchLocation)
-        logic = EshopLogic()
-        logic.execute(es)
-        logging.debug(f"es.list = {es.list}")
-        logging.debug(f"es.total_count = {es.total_count}")
-        return render_template("view/umain.html", es=es, searchLocation=searchLocation)
+    if request.method == "GET":
+        return render_template("view/umain.html", es=None, searchLocation="", searchShop="")
+    logging.debug(">>> main() route accessed")
 
+    searchLocation = request.form.get("searchLocation", "")
+    searchShop = request.form.get("searchShop", "")
+    logging.debug(f"search_location = {searchLocation}")
+    logging.debug(f"search_shop = {searchShop}")
+
+    es = EshopWord(search_location=searchLocation, search_shop=searchShop)
+    logic = EshopLogic()
+    logic.execute(es)
+
+    logging.debug(f"es.list = {es.list}")
+    logging.debug(f"es.total_count = {es.total_count}")
+
+    return render_template("view/umain.html", es=es, searchLocation=searchLocation, searchShop=searchShop)
 
 @app.route("/eshop_manage", methods=["GET", "POST"])
 @requires_auth
