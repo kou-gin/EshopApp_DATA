@@ -17,22 +17,33 @@
   <div class="container mt-5">
     <form action="{{ url_for('main') }}" method="post" class="bg-light p-4 rounded shadow">
       <h1 class="text-center mb-4">飲食店検索</h1>
-      <p>
+      <div class = "text-nowrap">
         ◆検索方法<br>
-        全件　　：空欄のまま検索<br>
-        都道府県：【例】「東京都」<br>
-        区　　　：【例】「港区」「東京都港区」<br>
-        地名　　：【例】「六本木」「港区六本木」
-      </p>
-      <div class="form-group">
+        (地域・店舗名それぞれ、または両方入力)<br>
+        【全件】<br>
+        　└空欄のまま検索<br>
+        【店舗地域】<br>
+        　└「○○都」<br>
+        　└「○○区」「東京都○○区」<br>
+        　└「○○」「港区○○」<br>
+        【店舗名】<br>
+        　└「○○カフェ」<br>
+         ※店舗名の一部でも検索可能。<br>
+          その場合他店舗も検索される。
+      </div>
+      <div class="form-group mt-3">
         <label for="search_location">店舗地域:</label>
         <input type="text" class="form-control" name="searchLocation" value="{{searchLocation}}">
       </div>
+      <div class="form-group">
+        <label for="search_shop">店舗名:</label>
+        <input type="text" class="form-control" name="searchShop" value="{{ searchShop }}">
+      </div> 
       <button type="submit" class="btn btn-primary btn-block">検索</button>
     </form>
     <br>
     {% if es and es.list and es.list|length > 0 %}
-      <p>全{{ es.total_count }}件</p>
+      <p>全{{ es.total_count }}件が見つかりました。</p>
       <div class="table-responsive">
         <table class="table table-bordered table-striped">
           <thead class="thead-dark">
